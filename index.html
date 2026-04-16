@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>BookEase — Appointment Booking System</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,600;0,800;1,300&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+
+<!-- PAGE TRANSITION PROGRESS BAR -->
+<div id="page-transition-bar"></div>
+
+<!-- TOAST -->
+<div id="toast-container"></div>
+
+<!-- CANCEL MODAL -->
+<div id="cancel-modal" class="modal-overlay hidden">
+  <div class="modal">
+    <h3>Cancel Appointment?</h3>
+    <p>Are you sure you want to cancel this appointment? This action cannot be undone.</p>
+    <div class="modal-actions">
+      <button class="btn btn-outline" onclick="closeModal()">Keep it</button>
+      <button class="btn btn-danger" onclick="confirmCancel()">Yes, Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- NAVBAR -->
+<nav id="navbar">
+  <div class="nav-inner">
+    <a class="nav-logo" onclick="navigate('home')">
+      <span>
+        <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="2" y="1" width="12" height="14" rx="2" fill="white" opacity="0.9"/>
+          <line x1="5" y1="6" x2="11" y2="6" stroke="#2563eb" stroke-width="1.5" stroke-linecap="round"/>
+          <line x1="5" y1="9" x2="9" y2="9" stroke="#2563eb" stroke-width="1.5" stroke-linecap="round"/>
+          <rect x="4" y="0" width="2" height="3" rx="1" fill="#2563eb"/>
+          <rect x="10" y="0" width="2" height="3" rx="1" fill="#2563eb"/>
+        </svg>
+      </span>
+      BookEase
+    </a>
+    <button class="nav-hamburger" onclick="toggleMobileNav()" aria-label="Menu">
+      <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+        <rect y="4" width="22" height="2" rx="1" fill="#3a3a4a"/>
+        <rect y="10" width="22" height="2" rx="1" fill="#3a3a4a"/>
+        <rect y="16" width="22" height="2" rx="1" fill="#3a3a4a"/>
+      </svg>
+    </button>
+    <ul class="nav-links" id="nav-links">
+      <li><a onclick="navigate('home')" id="nav-home">Home</a></li>
+      <li id="nav-book-li" class="hidden"><a onclick="navigate('book')" id="nav-book">Book</a></li>
+      <li id="nav-appts-li" class="hidden"><a onclick="navigate('appointments')" id="nav-appointments">My Appointments</a></li>
+      <li id="nav-admin-li" class="hidden"><a onclick="navigate('admin')" id="nav-admin">Admin</a></li>
+      <li id="nav-login-li"><a onclick="navigate('login')" id="nav-login">Login</a></li>
+      <li id="nav-register-li"><a onclick="navigate('register')" id="nav-register" class="btn-nav-cta">Get Started</a></li>
+      <li id="nav-logout-li" class="hidden"><button onclick="logout()">Logout</button></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- ===========================
+     HOME PAGE
+=========================== -->
+<section id="page-home" class="page active">
+  <div class="hero">
+    <div class="hero-text">
+      <h1>Book Your<br/><em>Perfect</em> Appointment</h1>
+      <p>Simple, fast, and reliable appointment scheduling. Choose your service, pick your time, and we'll handle the rest.</p>
+      <div class="hero-actions">
+        <button class="btn btn-primary" onclick="navigate('register')">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="5" r="3" stroke="white" stroke-width="1.5"/><path d="M2 13c0-3.314 2.686-5 6-5s6 1.686 6 5" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg>
+          Create Account
+        </button>
+        <button class="btn btn-outline" onclick="navigate('login')">Sign In</button>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="hero-card">
+        <div class="hero-card-title">Today's Schedule</div>
+        <div class="mini-slot">
+          <span class="mini-slot-time">9:00 AM</span>
+          <span class="mini-slot-service">Dental Checkup</span>
+          <span class="mini-slot-badge badge-confirmed">Confirmed</span>
+        </div>
+        <div class="mini-slot">
+          <span class="mini-slot-time">11:00 AM</span>
+          <span class="mini-slot-service">Eye Exam</span>
+          <span class="mini-slot-badge badge-pending">Pending</span>
+        </div>
+        <div class="mini-slot">
+          <span class="mini-slot-time">2:00 PM</span>
+          <span class="mini-slot-service">Haircut</span>
+          <span class="mini-slot-badge badge-available">Available</span>
+        </div>
+        <div class="mini-slot">
+          <span class="mini-slot-time">4:00 PM</span>
+          <span class="mini-slot-service">Consultation</span>
+          <span class="mini-slot-badge badge-confirmed">Confirmed</span>
+        </div>
+        <div class="mini-slot">
+          <span class="mini-slot-time">10:00 PM</span>
+          <span class="mini-slot-service">Consultation</span>
+          <span class="mini-slot-badge badge-confirmed">Available</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="features">
+    <div class="features-header">
+      <h2>Everything you need</h2>
+      <p>A complete booking experience from signup to appointment management</p>
+    </div>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon" style="background:#dbeafe;">📅</div>
+        <h3>Easy Scheduling</h3>
+        <p>Choose your preferred date, time slot, and service in just a few clicks. No more phone tag.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon" style="background:#d1fae5;">🔒</div>
+        <h3>Secure & Private</h3>
+        <p>Your data is stored securely with encrypted passwords and private profile management.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon" style="background:#fef3c7;">⚡</div>
+        <h3>Real-time Availability</h3>
+        <p>See live time slot availability — no double bookings, no conflicts, ever.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon" style="background:#ede9fe;">📋</div>
+        <h3>Manage Appointments</h3>
+        <p>View, track, and cancel your bookings from a clean personal dashboard.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon" style="background:#fee2e2;">🛡️</div>
+        <h3>Admin Controls</h3>
+        <p>Full admin panel with statistics, status management, and user overview.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon" style="background:#e0f2fe;">📱</div>
+        <h3>Mobile Responsive</h3>
+        <p>Works beautifully on any device — phone, tablet, or desktop.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===========================
+     REGISTER PAGE
+=========================== -->
+<section id="page-register" class="page">
+  <div class="auth-page">
+    <div class="auth-card">
+      <h2>Create Account</h2>
+      <p class="auth-sub">Already have one? <a onclick="navigate('login')">Sign in</a></p>
+
+      <div class="form-group">
+        <label for="reg-name">Full Name</label>
+        <input type="text" id="reg-name" placeholder="Jane Smith" autocomplete="name"/>
+        <div class="form-error-msg" id="err-reg-name">Please enter your full name</div>
+      </div>
+      <div class="form-group">
+        <label for="reg-email">Email Address</label>
+        <input type="email" id="reg-email" placeholder="jane@email.com" autocomplete="email"/>
+        <div class="form-error-msg" id="err-reg-email">Enter a valid email address</div>
+      </div>
+      <div class="form-group">
+        <label for="reg-phone">Phone (optional)</label>
+        <input type="tel" id="reg-phone" placeholder="+1 555 000"/>
+      </div>
+      <!-- role hidden — always 'user', admin can only be set via DB -->
+      <input type="hidden" id="reg-role" value="user"/>
+      <div class="form-group">
+        <label for="reg-pass">Password</label>
+        <input type="password" id="reg-pass" placeholder="Min. 6 characters"/>
+        <div class="form-error-msg" id="err-reg-pass">Password must be at least 6 characters</div>
+      </div>
+      <div class="form-group">
+        <label for="reg-pass2">Confirm Password</label>
+        <input type="password" id="reg-pass2" placeholder="Repeat password"/>
+        <div class="form-error-msg" id="err-reg-pass2">Passwords do not match</div>
+      </div>
+
+      <button class="btn btn-primary btn-full" id="btn-register" onclick="doRegister()">
+        Create Account
+      </button>
+
+    </div>
+  </div>
+</section>
+
+<!-- ===========================
+     LOGIN PAGE
+=========================== -->
+<section id="page-login" class="page">
+  <div class="auth-page">
+    <div class="auth-card">
+      <h2>Welcome Back</h2>
+      <p class="auth-sub">Don't have an account? <a onclick="navigate('register')">Sign up free</a></p>
+
+      <div class="form-group">
+        <label for="login-email">Email Address</label>
+        <input type="email" id="login-email" placeholder="jane@email.com" autocomplete="email"/>
+        <div class="form-error-msg" id="err-login-email">Enter your email address</div>
+      </div>
+      <div class="form-group">
+        <label for="login-pass">Password</label>
+        <input type="password" id="login-pass" placeholder="Your password"/>
+        <div class="form-error-msg" id="err-login-pass">Enter your password</div>
+      </div>
+
+      <button class="btn btn-primary btn-full" id="btn-login" onclick="doLogin()">
+        Sign In
+      </button>
+
+      <div class="divider-text">quick demo access</div>
+      <div style="display:grid;grid-template-columns:1fr;gap:10px;">
+        <button class="btn btn-outline" onclick="demoUser()">👤 Demo User</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===========================
+     BOOK APPOINTMENT PAGE
+=========================== -->
+<section id="page-book" class="page">
+  <div class="section-wrapper">
+    <div class="section-header">
+      <h2>Book an Appointment</h2>
+      <p>Select your service, date, and preferred time slot</p>
+    </div>
+
+    <div class="booking-layout">
+      <!-- FORM -->
+      <div class="booking-form-card">
+
+        <!-- Step 1: Service -->
+        <h3>1 · Select a Service</h3>
+        <div class="service-grid" id="service-grid">
+          <!-- Injected by JS -->
+        </div>
+        <div class="form-error-msg" id="err-service" style="margin-bottom:16px;">Please select a service</div>
+
+        <div class="divider"></div>
+
+        <!-- Step 2: Date -->
+        <h3>2 · Pick a Date</h3>
+        <div class="form-group">
+          <input type="date" id="book-date" onchange="loadTimeSlots()"/>
+          <div class="date-hint">📅 Weekends and past dates are unavailable</div>
+          <div class="form-error-msg" id="err-date">Please select a valid date</div>
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- Step 3: Time -->
+        <h3>3 · Choose a Time Slot</h3>
+        <div id="time-slots-container">
+          <p style="color:var(--ink-muted);font-size:0.875rem;">Select a date first to see available slots</p>
+        </div>
+        <div class="form-error-msg" id="err-time">Please select a time slot</div>
+
+        <div class="divider"></div>
+
+        <!-- Step 4: Notes -->
+        <h3>4 · Additional Notes <span style="color:var(--ink-muted);font-size:0.85rem;font-weight:400;">(optional)</span></h3>
+        <div class="form-group">
+          <textarea id="book-notes" rows="3" placeholder="Any special requests or information..." style="resize:vertical;min-height:80px;"></textarea>
+        </div>
+
+        <button class="btn btn-primary btn-full" id="btn-book" onclick="doBook()" style="margin-top:8px;">
+          Confirm Booking
+        </button>
+      </div>
+
+      <!-- SIDEBAR -->
+      <div class="booking-sidebar">
+        <div class="sidebar-card">
+          <h4>Booking Summary</h4>
+          <div class="summary-row">
+            <span class="label">Service</span>
+            <span class="value" id="sum-service"><em class="empty">Not selected</em></span>
+          </div>
+          <div class="summary-row">
+            <span class="label">Duration</span>
+            <span class="value" id="sum-duration"><em class="empty">—</em></span>
+          </div>
+          <div class="summary-row">
+            <span class="label">Date</span>
+            <span class="value" id="sum-date"><em class="empty">Not selected</em></span>
+          </div>
+          <div class="summary-row">
+            <span class="label">Time</span>
+            <span class="value" id="sum-time"><em class="empty">Not selected</em></span>
+          </div>
+          <div class="divider" style="margin:12px 0;"></div>
+          <div class="summary-row">
+            <span class="label" style="font-weight:600;color:var(--ink);">Price</span>
+            <span class="value" id="sum-price" style="font-size:1.05rem;color:var(--accent);"><em class="empty">—</em></span>
+          </div>
+        </div>
+
+        <div class="sidebar-card">
+          <h4>Booking Info</h4>
+          <ul style="list-style:none;display:flex;flex-direction:column;gap:10px;">
+            <li style="font-size:0.83rem;color:var(--ink-soft);display:flex;gap:8px;"><span>✅</span> Free cancellation up to 2h before</li>
+            <li style="font-size:0.83rem;color:var(--ink-soft);display:flex;gap:8px;"><span>🔒</span> Secure, private booking</li>
+            <li style="font-size:0.83rem;color:var(--ink-soft);display:flex;gap:8px;"><span>📱</span> Confirmation saved to your account</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===========================
+     MY APPOINTMENTS PAGE
+=========================== -->
+<section id="page-appointments" class="page">
+  <div class="section-wrapper">
+    <div class="section-header" style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:16px;">
+      <div>
+        <h2>My Appointments</h2>
+        <p>Manage and track your bookings</p>
+      </div>
+      <button class="btn btn-primary" onclick="navigate('book')">+ New Booking</button>
+    </div>
+
+    <div class="appointments-filters" id="appt-filters">
+      <button class="filter-btn active" data-filter="all" onclick="filterAppointments('all',this)">All</button>
+      <button class="filter-btn" data-filter="pending" onclick="filterAppointments('pending',this)">Pending</button>
+      <button class="filter-btn" data-filter="confirmed" onclick="filterAppointments('confirmed',this)">Confirmed</button>
+      <button class="filter-btn" data-filter="cancelled" onclick="filterAppointments('cancelled',this)">Cancelled</button>
+    </div>
+
+    <div id="appointments-list"></div>
+  </div>
+</section>
+
+<!-- ===========================
+     ADMIN PANEL PAGE
+=========================== -->
+<section id="page-admin" class="page">
+  <div class="section-wrapper">
+    <div class="section-header">
+      <h2>Admin Dashboard</h2>
+      <p>Manage all appointments, users, and system statistics</p>
+    </div>
+
+    <div class="admin-layout">
+      <!-- Admin Sidebar Nav -->
+      <div class="admin-sidebar">
+        <div class="admin-sidebar-title">Navigation</div>
+        <button class="admin-nav-item active" onclick="adminTab('overview',this)">
+          <span class="nav-icon">📊</span> Overview
+        </button>
+        <button class="admin-nav-item" onclick="adminTab('all-appointments',this)">
+          <span class="nav-icon">📅</span> All Appointments
+        </button>
+        <button class="admin-nav-item" onclick="adminTab('users',this)">
+          <span class="nav-icon">👥</span> Users
+        </button>
+      </div>
+
+      <!-- Admin Content -->
+      <div class="admin-content" id="admin-content">
+        <!-- Injected by JS -->
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <strong>BookEase</strong> — Online Appointment Booking System &nbsp;·&nbsp; Built with HTML, CSS & JavaScript &nbsp;·&nbsp; Data stored in localStorage
+</footer>
+
+<!-- ===========================
+     SQL / BACKEND REFERENCE
+     (Included as JS comment block
+     for the developer)
+=========================== -->
+<script src="app.js"></script>
+</body>
+</html>
